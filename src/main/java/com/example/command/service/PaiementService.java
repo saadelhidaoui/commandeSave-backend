@@ -20,9 +20,7 @@ public class PaiementService {
     }
 
     public int deleteByCommandeRef(String ref) {
-        int res1 = paiementDao.deleteByCommandeRef(ref);
-        int res2 = commandeService.deleteByRef(ref);
-        return res1 + res2;
+        return paiementDao.deleteByCommandeRef(ref);
     }
 
     public List<Paiement> findAll() {
@@ -30,22 +28,22 @@ public class PaiementService {
     }
 
 
-    public String save(Paiement paiement) {
+    public int save(Paiement paiement) {
         if(findByRef(paiement.getRef()) != null){
-            return "ref deja existe";
+            return -1;
         }
         Commande commande = commandeService.findByRef(paiement.getCommande().getRef());
         paiement.setCommande(commande);
         if(commande == null){
-            return "pas de commande";
+            return -2;
         }else if(commande.getTotalPaye()+paiement.getMontant() > commande.getTotal()){
-            return "total paye depasse total de la commande";
+            return -3;
         }else{
             Double nvTotalPaye = commande.getTotalPaye()+paiement.getMontant();
             commande.setTotalPaye(nvTotalPaye);
             commandeService.update(commande);
             paiementDao.save(paiement);
-            return "merci";
+            return 1;
         }
     }
 

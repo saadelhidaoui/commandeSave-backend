@@ -1,7 +1,6 @@
 package com.example.command.ws;
 
 import com.example.command.bean.Paiement;
-import com.example.command.service.CommandeService;
 import com.example.command.service.PaiementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +22,8 @@ public class PaiementWs {
 
     @DeleteMapping("/commande/ref/{ref}")
     public int deleteByCommandeRef(@PathVariable String ref) {
-        int res1 = paiementService.deleteByCommandeRef(ref);
-        int res2 = commandeService.deleteByRef(ref);
-        return res1 + res2;
+        return paiementService.deleteByCommandeRef(ref);
+
     }
 
     @GetMapping("/")
@@ -34,12 +32,10 @@ public class PaiementWs {
     }
 
     @PostMapping("/")
-    public String save(@RequestBody Paiement paiement) {
+    public int save(@RequestBody Paiement paiement) {
         return paiementService.save(paiement);
     }
 
     @Autowired
     private PaiementService paiementService;
-    @Autowired
-    private CommandeService commandeService;
 }
